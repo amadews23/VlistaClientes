@@ -34,10 +34,9 @@ public class ControladorCliente : GLib.Object {
 		// (db.prepare shouldn't be used anymore)
 		//
 		Sqlite.Statement stmt;
-		//NO const
 		string prepared_query_str = "SELECT Id, nif, nombre, apellidos, tel, tel2, 
-									email, domicilio, cp, ciudad, otros 
-									FROM  clientes WHERE Id=" + id.to_string () + ";";
+							email, domicilio, cp, ciudad, otros 
+							FROM  clientes WHERE Id=" + id.to_string () + ";";
 		
 		int ec = db.prepare_v2 (prepared_query_str, prepared_query_str.length, out stmt);
 
@@ -52,9 +51,9 @@ public class ControladorCliente : GLib.Object {
 
 		//"Debug"	
 		print ("Nº: %d - Nombre: %s - Apellidos: %s\n", 
-	       stmt.column_int (0),
-	       stmt.column_text(2), 
-	       stmt.column_text(3) );
+	        stmt.column_int (0),
+	        stmt.column_text(2), 
+	        stmt.column_text(3) );
 		
 		//Object assign fields	
 		cliente.set_id(stmt.column_int (0));
@@ -76,7 +75,7 @@ public class ControladorCliente : GLib.Object {
 	
 	//Insert a new cliente in the database or update
 	public static bool insertar(Cliente cliente, 
-	                        	bool modificacion = false,
+	                       	    bool modificacion = false,
 	                            string id = "0" ) 
 	{
 		if (abrir_bd () != Sqlite.OK) {
@@ -89,23 +88,39 @@ public class ControladorCliente : GLib.Object {
 		string query;
 		if (modificacion == false ) {
 			
-			query = "
-			INSERT INTO clientes (nif, nombre, apellidos, tel, tel2, email, domicilio, cp, ciudad, otros) 
-			VALUES ('"
-				    + cliente.get_nif () + "','"
-					+ cliente.get_nombre () + "','" 
-					+ cliente.get_apellidos () + "','"
-					+ cliente.get_tel1 () + "','"
-					+ cliente.get_tel2 () + "','" 
-					+ cliente.get_email () + "','" 
-					+ cliente.get_domicilio () + "','"
-					+ cliente.get_cp () + "','" 
-					+ cliente.get_ciudad () + "','"
-					+ cliente.get_varios () + "'"
-					+ ");";
+			query = "INSERT INTO clientes (nif, 
+						       nombre, 
+						       apellidos, 
+						       tel, 
+						       tel2,
+						       email,
+						       domicilio,
+						       cp,
+						       ciudad,
+						       otros) 
+						       VALUES ('" + cliente.get_nif () 
+						                  + "','"
+								  + cliente.get_nombre ()
+								  + "','" 
+								  + cliente.get_apellidos ()
+								  + "','"
+								  + cliente.get_tel1 ()
+								  + "','"
+								  + cliente.get_tel2 ()
+								  + "','" 
+								  + cliente.get_email ()
+								  + "','" 
+								  + cliente.get_domicilio ()
+								  + "','"
+								  + cliente.get_cp ()
+								  + "','" 
+								  + cliente.get_ciudad ()
+								  + "','"
+								  + cliente.get_varios ()
+								  + "'"
+								  + ");";
 
-		} else {
-			
+		} else {		
 			query = "UPDATE clientes SET nif ='" + cliente.get_nif () + "',"
 							  + "nombre ='" + cliente.get_nombre () + "',"
 							  + "apellidos ='" + cliente.get_apellidos () + "',"
@@ -113,11 +128,10 @@ public class ControladorCliente : GLib.Object {
 							  + "tel2 ='" + cliente.get_tel2 () + "',"
 							  + "email ='" + cliente.get_email () + "',"
 							  + "domicilio='" + cliente.get_domicilio () + "',"
-				              + "cp ='" + cliente.get_cp () + "',"
+				             		  + "cp ='" + cliente.get_cp () + "',"
 							  + "ciudad ='" + cliente.get_ciudad () + "',"
-				              + "otros ='" + cliente.get_varios () 
+				                          + "otros ='" + cliente.get_varios () 
 							  + "' WHERE Id =" + id + ";" ;
-			//print (cliente.get_id().to_string ());
 		}
 		
 		int ec = db.exec (query, null, out errmsg);
@@ -142,11 +156,10 @@ public class ControladorCliente : GLib.Object {
 
 		Sqlite.Statement stmt;
 		
-		//const 
 		string prepared_query_str = "SELECT id, nombre, apellidos, tel, tel2, email, nif FROM clientes "
-									+ filtro 
-									+ campo 
-									+ ";";	
+					     + filtro 
+					     + campo 
+					     + ";";	
 
 		int ec = db.prepare_v2 (prepared_query_str, prepared_query_str.length, out stmt);
 
@@ -159,17 +172,17 @@ public class ControladorCliente : GLib.Object {
 		}
 		
 		Cliente[] lista_clientes = new Cliente[Utilidades.devolver_num_rows ("clientes", filtro, campo)];
+		
 		int contador = 0;
 		while (stmt.step () == Sqlite.ROW) {
 			
-			lista_clientes[ contador ] = new Cliente.constructor_for_list (
-			                                             stmt.column_int (0), 
-				        								 stmt.column_text(1), 
-				        								 stmt.column_text(2),
-				        								 stmt.column_text(3),
-				        								 stmt.column_text(4),
-				        								 stmt.column_text(5),
-				        								 stmt.column_text(6));
+			lista_clientes[ contador ] = new Cliente.constructor_for_list (	stmt.column_int (0), 
+		        								stmt.column_text(1), 
+				        						stmt.column_text(2),
+				        						stmt.column_text(3),
+				        						stmt.column_text(4),
+				        						stmt.column_text(5),
+				        						stmt.column_text(6));
 			contador++;
 			print ("%s\n",stmt.column_text (2));
 			
@@ -177,10 +190,4 @@ public class ControladorCliente : GLib.Object {
 		return lista_clientes;
 	}
 
-
-	
-	//public static bool modificar( int id) {
-		
-	//	return true;
-	//}
 }
