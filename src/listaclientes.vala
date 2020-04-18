@@ -43,8 +43,7 @@ public class Main : Object
 	public Main ()
 	{
 
-		try 
-		{
+		try {
 			var builder = new Builder ();
 			builder.add_from_file (UI_FILE);
 			builder.connect_signals (this);
@@ -52,11 +51,11 @@ public class Main : Object
 			var window = builder.get_object ("window") as Window;
 			/* ANJUTA: Widgets initialization for listaclientes.ui - DO NOT REMOVE */
 
-		    this.clientes_treeview = builder.get_object ("clientes_treeview") as Gtk.TreeView;
+		    	this.clientes_treeview = builder.get_object ("clientes_treeview") as Gtk.TreeView;
  			this.liststore = builder.get_object ("liststore") as Gtk.ListStore;
  			this.liststore1 = builder.get_object ("liststore1") as Gtk.ListStore;
 			this.busqueda_combo = builder.get_object ("busqueda_combo") as Gtk.ComboBox;
-		    this.busqueda_entry = builder.get_object ("busqueda_entry") as Gtk.Entry;
+		    	this.busqueda_entry = builder.get_object ("busqueda_entry") as Gtk.Entry;
 			buscar_button = builder.get_object ("buscar_button") as Gtk.Button;
 		   	cliente_label = builder.get_object ("cliente_label") as Gtk.Label;
 
@@ -75,14 +74,13 @@ public class Main : Object
 			//});		
 
 			// Monitor list double-clicks.
-    		clientes_treeview.row_activated.connect (al_doble_click);
-    		// Monitor list selection changes
-    		clientes_treeview.get_selection().changed.connect (al_seleccionar);
+    			clientes_treeview.row_activated.connect (al_doble_click);
+    			// Monitor list selection changes
+    			clientes_treeview.get_selection().changed.connect (al_seleccionar);
 
 			busqueda_combo.set_active (1); //Search default by nombre
 		
 			window.show_all ();
-
 		
 		} 
 		catch (Error e) {
@@ -92,44 +90,47 @@ public class Main : Object
 	}  
 
 	/* List item selection handler. */
-    private void al_seleccionar (Gtk.TreeSelection selection) 
-	{
-		
-        Gtk.TreeModel model;
-        Gtk.TreeIter iter;
-        if (selection.get_selected (out model, out iter)) {
-            Cliente cliente = get_selection (model, iter);
-            cliente_label.label = @"Seleccion de: $(cliente.get_id ().to_string ()
-												  +"- "
-												  +cliente.get_nombre ()
-												  +" "
-												  +cliente.get_apellidos ())
-													";
+    	private void al_seleccionar (Gtk.TreeSelection selection) 
+	{	
+        	Gtk.TreeModel model;
+        	Gtk.TreeIter iter;
+        
+		if (selection.get_selected (out model, out iter)) {
+            		Cliente cliente = get_selection (model, iter);
+            		cliente_label.label = @"Seleccion de: $(cliente.get_id ().to_string ()
+			                     			+"- "
+								+cliente.get_nombre ()
+								+" "
+								+cliente.get_apellidos ())
+								";
+								
 			print("%s\n",cliente.get_nombre ()); //for debug
-        }
-    }
+     		}
+    	}
 
 	/* List item double-click handler. */
-    private void al_doble_click (Gtk.TreeView treeview ,
-                                 Gtk.TreePath path, 
-                                 Gtk.TreeViewColumn column)
-	 {
-        Gtk.TreeIter iter;
-        if (clientes_treeview.model.get_iter (out iter, path)) {
-            Cliente cliente = get_selection (clientes_treeview.model, iter);
-            cliente_label.label = @"Doble click en: $(cliente.get_id ().to_string ()
-												    +"- "
-												    +cliente.get_nombre ()
-												    +" "
-												    +cliente.get_apellidos ())
-													";
-        }
-    }
-	 
-    private static Cliente get_selection (Gtk.TreeModel model,
-                                          Gtk.TreeIter iter) 
+    	private void al_doble_click (Gtk.TreeView treeview ,
+        	                     Gtk.TreePath path, 
+                                     Gtk.TreeViewColumn column)
 	{
-        int id;
+        	Gtk.TreeIter iter;
+		
+        	if (clientes_treeview.model.get_iter (out iter, path)) {
+            		Cliente cliente = get_selection (clientes_treeview.model, iter);
+            		cliente_label.label = @"Doble click en: $(cliente.get_id ().to_string ()
+								  +"- "
+								  +cliente.get_nombre ()
+								  +" "
+								  +cliente.get_apellidos ())
+								  ";
+        	}
+    	}
+	 
+    	private static Cliente get_selection (Gtk.TreeModel model,
+        	                              Gtk.TreeIter iter) 
+	{
+	
+        	int id;
 		string nombre;
 		string apellidos;
 		string tel1;
@@ -137,24 +138,24 @@ public class Main : Object
 		string email; 
 		string nif;
 		
-        model.get (iter, 
-                   0, out id, 
-                   1, out nombre, 
-                   2, out apellidos, 
-                   3, out tel1,
-                   4, out tel2,
-                   5, out email,
-                   6, out nif);
+        	model.get (iter, 
+                   	   0, out id, 
+                   	   1, out nombre, 
+                   	   2, out apellidos, 
+                           3, out tel1,
+                           4, out tel2,
+                           5, out email,
+                           6, out nif);
 		
 		Cliente cliente = new Cliente.constructor_for_list (id,
-		                                        			nombre,
-		                                        			apellidos,
-		                                        			tel1,
-		                                        			tel2,
-		                                        			email,
-		                                        			nif);
+	                                            	            nombre,
+		                                        	    apellidos,
+		                                        	    tel1,
+		                                        	    tel2,
+		                                        	    email,
+		                                        	    nif);
 		return cliente;
-    }
+    	}
 
 
 	private void mostrar(string filtro="",
@@ -165,26 +166,27 @@ public class Main : Object
 			Cliente[] lista_clientes = ControladorCliente.obtener_lista (filtro, campo);
 
 
-		    for (int i=0; i < Utilidades.devolver_num_rows ("clientes", filtro, campo); i++) {
-      			Gtk.TreeIter iter;
-      			liststore.append (out iter);
-      			liststore.set (iter, 
-            		              0, lista_clientes[i].get_id (), 
-                		          1, lista_clientes[i].get_nombre (), 
-        	        		        2, lista_clientes[i].get_apellidos (), 
-                        		  3, lista_clientes[i].get_tel1 (), 
-                          		4, lista_clientes[i].get_tel2 (), 
-                          		5, lista_clientes[i].get_email (), 
-                          		6, lista_clientes[i].get_nif ());
+		    	for (int i=0; i < Utilidades.devolver_num_rows ("clientes", filtro, campo); i++) {
+      			
+				Gtk.TreeIter iter;
+      				liststore.append (out iter);
+      				liststore.set (iter, 
+            		              	       0, lista_clientes[i].get_id (), 
+                		               1, lista_clientes[i].get_nombre (), 
+        	        		       2, lista_clientes[i].get_apellidos (), 
+                        		       3, lista_clientes[i].get_tel1 (), 
+                          		       4, lista_clientes[i].get_tel2 (), 
+                          		       5, lista_clientes[i].get_email (), 
+                          		       6, lista_clientes[i].get_nif ());
 			}
 	}
 
 	private void  mostrar_condicional() 
 	{
  		this.liststore.clear ();
-			//print("%i",busqueda_combo.get_active ());
-			switch (busqueda_combo.get_active ()) {
-				
+		//print("%i",busqueda_combo.get_active ());
+		switch (busqueda_combo.get_active ()) {
+			
 				case 0:
 					mostrar("WHERE Id=", busqueda_entry.get_text ());
 					//print("%s",busqueda_entry.get_text ());
